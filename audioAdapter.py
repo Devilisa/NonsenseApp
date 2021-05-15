@@ -1,9 +1,7 @@
 from kivy.core.audio import SoundLoader
 
-
 class AudioAdapter:
     def __init__(self, music_file, loop):
-        self.pause_time = 20
         self.sound = SoundLoader.load(music_file)
         if self.sound:
             self.sound.loop = loop
