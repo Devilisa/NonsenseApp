@@ -1,23 +1,24 @@
-from Game import GamePeriod
-from Game import BasicPanel
-from Players import EnterPlayerNum
+from Players_add import Players
 from texts import questions_story1 as qu1
 from texts import text_story1 as tx1
 from Story import Story
 from kivy.app import App
 
 
+# Запускает реализацию всего алгоритма игры после выбора истории(кнопка выбора истории должна запускать
+# функцию создания объкта данного класса и его запуск)
 class NonsenseApp(App):
 
     def __init__(self, questions, text, **kwargs):
-        super(NonsenseApp, self).__init__()
+        super(NonsenseApp, self).__init__(**kwargs)
         self.my_story = Story(questions, text)
-        self.game = GamePeriod(self.my_story)
-        self.player_number = EnterPlayerNum(self.my_story.max_player_number)
+        self.questions = questions
+        self.text = text
+        self.max_num = self.my_story.max_player_number
 
     def build(self):
-        bp = BasicPanel(self.game, self.my_story, self.player_number)
-        return bp
+        pl = Players(self.max_num, self.questions, self.text)
+        pl.run()
 
 
 example = NonsenseApp(qu1, tx1)

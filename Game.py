@@ -1,5 +1,4 @@
 from texts import dictionary
-from Players import EnterPlayerNum
 from kivy.uix.label import Label
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.boxlayout import BoxLayout
@@ -10,29 +9,34 @@ from kivy.graphics import Color
 from kivy.graphics import Rectangle
 
 
+# Реализация вопросов и ответов на них, в конце выведет поле с целой историей
 class GamePeriod(AnchorLayout):
     counter = 1
     labels = []
 
-    def __init__(self, story, **kw):
+    def __init__(self, story, players, **kw):
         super().__init__(**kw)
+        self.players = players
         self.answers = story.answers
         self.card_words = story.questions
         self.hint = "Пример:" + dictionary[self.card_words[0]]
-        label = self.create_label(self.card_words[0])
+        print(self.players)
+        label = self.create_label(self.players[0] + ': ' + self.card_words[0])
         self.labels.append(label)
         self.add_widget(label)
 
     def change_card(self):
         anim_from_window_back_to_pos = Animation(x=-300, y=800)
         anim_from_window_back_to_pos.start(self.labels[len(self.labels) - 1])
-        label = self.create_label(self.card_words[self.counter])
+        label = self.create_label(self.players[self.counter % len(self.players)] + ': ' + self.card_words[self.counter])
         self.counter += 1
-        self.hint = "Пример:" + dictionary[self.card_words[self.counter]]
+        if self.counter < len(self.card_words):
+            self.hint = "Пример:" + dictionary[self.card_words[self.counter]]
         self.labels.append(label)
         self.add_widget(label)
 
-    def create_label(self, message):
+    @staticmethod
+    def create_label(message):
         return Button(text=message,
                       size_hint=[0.8, 0.8],
                       background_normal='',
@@ -52,12 +56,10 @@ class BasicPanel(BoxLayout):
     button = 0
     hints = dictionary
 
-    def __init__(self, panel, story, players_number, **kwargs):
+    def __init__(self, panel, story, **kwargs):
         super(BasicPanel, self).__init__(**kwargs)
         self.cards_panel = panel
         self.story = story
-        self.players_number = players_number
-        self.players_number.get_number
         self.button = ButtonPanel(self, anchor_x='center', anchor_y='top')
         self.text_field = TextInput(hint_text=self.cards_panel.hint)
         self.box.add_widget(self.cards_panel)
@@ -96,4 +98,3 @@ class BasicPanel(BoxLayout):
             self.text_field.text = ''
         else:
             self.ready_to_get_result()
-
